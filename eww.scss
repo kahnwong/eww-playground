@@ -14,7 +14,7 @@ button {
   border: none;
   color: #eeeeee;
   border-radius: 9999px; /* Pill shapes when hovered */
-  padding: 0px 10px;
+  padding: 4px 15px;
   transition: background-color 0.15s ease;
 
   &:hover {
@@ -32,7 +32,7 @@ button {
   margin: 2px 0px;
 
   .status-icon-btn {
-    padding: 0px 6px;
+    padding: 4px 11px;
   }
 
   .status-icon {
