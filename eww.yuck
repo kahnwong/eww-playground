@@ -1,12 +1,55 @@
-(defwindow example
+;; Define the variables that update automatically
+(defpoll time :interval "1s" "date '+%H:%M:%S'")
+(defpoll date :interval "10s" "date '+%b %d, %Y'")
+
+;; The Top Bar Window
+(defwindow gnome-bar
            :monitor 0
            :geometry (geometry :x "0%"
-                               :y "20px"
-                               :width "90%"
-                               :height "30px"
+                               :y "0px"
+                               :width "100%"
+                               :height "36px"
                                :anchor "top center")
            :stacking "fg"
-           :reserve (struts :distance "40px" :side "top")
            :windowtype "dock"
-           :wm-ignore false
-  "example content")
+           :wm-ignore false                      ; Changed to false so GNOME manages it
+           :reserve (struts :distance "36px" :side "top") ; Reserves space for XWayland
+  (bar-layout))
+
+;; Main Layout Component
+(defwidget bar-layout []
+  (box :class "bar-class"
+       :orientation "h"
+    (left-stuff)
+    (center-stuff)
+    (right-stuff)))
+
+;; Left Section: Workspaces (Simulated clickable buttons)
+(defwidget left-stuff []
+  (box :class "workspaces"
+       :orientation "h"
+       :space-evenly false
+       :halign "start"
+    (button :class "ws-btn active" :onclick "wmctrl -s 0" "1")
+    (button :class "ws-btn" :onclick "wmctrl -s 1" "2")
+    (button :class "ws-btn" :onclick "wmctrl -s 2" "3")
+    (button :class "ws-btn" :onclick "wmctrl -s 3" "4")))
+
+;; Center Section: Clock & Date
+(defwidget center-stuff []
+  (box :class "clock-section"
+       :orientation "h"
+       :halign "center"
+    (label :text "${date}  |  ${time}" :class "time-label")))
+
+;; Right Section: Battery & Connectivity status
+(defwidget right-stuff []
+  (box :class "sys-status"
+       :orientation "h"
+       :space-evenly false
+       :halign "end"
+    ;; Wifi & Bluetooth Status Indicators
+    (label :text "󰖩  Connected" :class "status-item wifi")
+    (label :text "󰂯 On" :class "status-item bluetooth")
+    ;; Battery Percentage (Using Eww's built-in conditional logic)
+    (label :text {EWW_BATTERY == "" ? "󰁹 100%" : "󰁹 ${EWW_BATTERY.BAT0.capacity}%"} :class "status-item battery")))

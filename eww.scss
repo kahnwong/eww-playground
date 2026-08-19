@@ -1,0 +1,57 @@
+// Simple Reset & Global Styles
+* {
+  all: unset;
+  font-family: "JetBrains Mono", "Ubuntu", "Segoe UI", sans-serif;
+  font-size: 14px;
+}
+
+// The Bar container itself
+.bar-class {
+  background-color: rgba(20, 20, 24, 0.95);
+  color: #cdd6f4;
+  padding: 0px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+// Workspace buttons layout
+.workspaces {
+  .ws-btn {
+    padding: 0px 12px;
+    margin: 4px 2px;
+    border-radius: 4px;
+    color: #a6adc8;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    &.active {
+      background-color: #89b4fa;
+      color: #11111b;
+      font-weight: bold;
+    }
+  }
+}
+
+// Center Clock Text
+.time-label {
+  font-weight: bold;
+  color: #f5c2e7;
+}
+
+// Right Status Items
+.sys-status {
+  .status-item {
+    margin-left: 20px;
+
+    &.wifi {
+      color: #a6e3a1;
+    }
+    &.bluetooth {
+      color: #89b4fa;
+    }
+    &.battery {
+      color: #f9e2af;
+    }
+  }
+}

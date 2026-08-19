@@ -17,4 +17,7 @@ cargo build --release --no-default-features --features x11
 ```bash
 GDK_BACKEND=x11 eww daemon
 eww open hello
+eww close hello
+
+eww reload
 ```

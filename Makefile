@@ -1,3 +1,4 @@
 dev:
 	mkdir -p ~/.config/eww
-	fd eww.yuck | entr cp eww.yuck ~/.config/eww/
+	cp eww.yuck ~/.config/eww/
+	cp eww.scss ~/.config/eww/
