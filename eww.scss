@@ -37,6 +37,10 @@ button {
 
   .status-icon-btn {
     padding: 4px 11px;
+
+    &:hover {
+      background-color: transparent;
+    }
   }
 
   .status-icon {
