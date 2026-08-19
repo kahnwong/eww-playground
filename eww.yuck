@@ -3,6 +3,8 @@
 (defpoll wifi_status :interval "10s" "nmcli radio wifi 2>/dev/null || true")
 (defpoll wifi_name :interval "10s" "nmcli -t -f ACTIVE,SSID dev wifi 2>/dev/null | sed -n 's/^yes://p' | sed -n '1p' || true")
 (defpoll bluetooth_status :interval "10s" "bluetoothctl show 2>/dev/null | sed -n 's/^[[:space:]]*Powered: //p' || true")
+(defpoll current_workspace :interval "100ms" "xprop -root _NET_CURRENT_DESKTOP | sed 's/.*= //' ")
+(defpoll workspace_count :interval "1s" "xprop -root _NET_NUMBER_OF_DESKTOPS | sed 's/.*= //' ")
 
 ;; The Top Bar Window
 (defwindow gnome-bar
@@ -83,13 +85,27 @@
     (center-stuff)
     (right-stuff)))
 
-;; Left Section: "Activities" (Stock GNOME style)
+;; Left Section: Workspaces
 (defwidget left-stuff []
-  (box :class "activities-section"
+  (box :class "workspace-indicator"
        :orientation "h"
        :space-evenly false
        :halign "start"
-    (button :class "activities-btn" :onclick "gnome-extensions prefs just-perfection-desktop@just-perfection" "Activities")))
+    (button :class {current_workspace == "0" ? "workspace-btn active" : "workspace-btn"}
+            :onclick "ydotool key -d 100 125:1 102:1 102:0 125:0"
+            "1")
+    (button :class {current_workspace == "1" ? "workspace-btn active" : "workspace-btn"}
+            :visible {workspace_count >= 2}
+            :onclick "ydotool key -d 100 125:1 102:1 102:0 125:0 125:1 109:1 109:0 125:0"
+            "2")
+    (button :class {current_workspace == "2" ? "workspace-btn active" : "workspace-btn"}
+            :visible {workspace_count >= 3}
+            :onclick "ydotool key -d 100 125:1 102:1 102:0 125:0 125:1 109:1 109:0 125:0 125:1 109:1 109:0 125:0"
+            "3")
+    (button :class {current_workspace == "3" ? "workspace-btn active" : "workspace-btn"}
+            :visible {workspace_count >= 4}
+            :onclick "ydotool key -d 100 125:1 102:1 102:0 125:0 125:1 109:1 109:0 125:0 125:1 109:1 109:0 125:0 125:1 109:1 109:0 125:0"
+            "4")))
 
 ;; Center Section: Date & Time
 (defwidget center-stuff []

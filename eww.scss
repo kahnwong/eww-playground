@@ -22,9 +22,34 @@ button {
   }
 }
 
-/* Activities Button specific styling */
-.activities-btn {
-  font-weight: 500;
+/* Workspace indicator */
+.workspace-indicator {
+  .workspace-btn {
+    border-radius: 0;
+    box-shadow: none;
+    color: #a8a8a8;
+    padding: 4px 10px;
+    transition: none;
+
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: transparent;
+      box-shadow: none;
+    }
+
+    &.active {
+      background-color: #eeeeee;
+      color: #101010;
+      padding: 6px;
+
+      &:hover,
+      &:active,
+      &:focus {
+        background-color: #eeeeee;
+      }
+    }
+  }
 }
 
 .clock-label {
