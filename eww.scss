@@ -3,7 +3,7 @@
   background-color: rgba(16, 16, 16, 0.95); /* Deep charcoal GNOME background */
   color: #eeeeee;
   font-family: "Cantarell", "Inter", sans-serif;
-  font-size: 13px;
+  font-size: 20px;
   font-weight: bold;
   padding: 0px 12px;
 }
@@ -36,7 +36,7 @@ button {
   }
 
   .status-icon {
-    font-size: 14px;
+    font-size: 20px;
   }
 }
 
@@ -47,6 +47,7 @@ button {
   border-radius: 14px;
   color: #eeeeee;
   font-family: "Cantarell", "Inter", sans-serif;
+  font-size: 20px;
   padding: 14px;
 }
 
@@ -55,17 +56,17 @@ button {
 }
 
 .status-popup-icon {
-  font-size: 22px;
+  font-size: 20px;
 }
 
 .status-popup-title {
-  font-size: 14px;
+  font-size: 20px;
   font-weight: bold;
 }
 
 .status-popup-detail {
   color: #b8b8b8;
-  font-size: 12px;
+  font-size: 20px;
 }
 
 .status-popup-action {
