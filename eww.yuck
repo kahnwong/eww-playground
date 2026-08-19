@@ -1,6 +1,8 @@
 ;; Define the variables that update automatically
-(defpoll time :interval "1s" "date '+%H:%M:%S'")
-(defpoll date :interval "10s" "date '+%b %d, %Y'")
+(defpoll time :interval "1m" "date '+%a %b %d  %H:%M'") ; GNOME style format: Wed Aug 19 21:46
+(defpoll wifi_status :interval "10s" "nmcli radio wifi 2>/dev/null || true")
+(defpoll wifi_name :interval "10s" "nmcli -t -f ACTIVE,SSID dev wifi 2>/dev/null | sed -n 's/^yes://p' | sed -n '1p' || true")
+(defpoll bluetooth_status :interval "10s" "bluetoothctl show 2>/dev/null | sed -n 's/^[[:space:]]*Powered: //p' || true")
 
 ;; The Top Bar Window
 (defwindow gnome-bar
@@ -8,48 +10,136 @@
            :geometry (geometry :x "0%"
                                :y "0px"
                                :width "100%"
-                               :height "36px"
+                               :height "28px"            ; Stock GNOME bar is typically ~28px-32px
                                :anchor "top center")
            :stacking "fg"
            :windowtype "dock"
-           :wm-ignore false                      ; Changed to false so GNOME manages it
-           :reserve (struts :distance "36px" :side "top") ; Reserves space for XWayland
+           :wm-ignore false
+           :reserve (struts :distance "28px" :side "top")
   (bar-layout))
+
+(defwindow wifi-popup
+           :monitor 0
+           :geometry (geometry :x "12px"
+                               :y "34px"
+                               :width "260px"
+                               :height "120px"
+                               :anchor "top right")
+           :stacking "fg"
+           :windowtype "dialog"
+           :wm-ignore true
+  (status-popup :icon {wifi_status == "enabled" ? "󰖩" : "󰖪"}
+                :title "Wi-Fi"
+                :detail {wifi_status != "enabled" ? "Off" : wifi_name == "" ? "Disconnected" : wifi_name}
+                :action "Open Wi-Fi Settings"
+                :command "gnome-control-center wifi"))
+
+(defwindow bluetooth-popup
+           :monitor 0
+           :geometry (geometry :x "12px"
+                               :y "34px"
+                               :width "260px"
+                               :height "120px"
+                               :anchor "top right")
+           :stacking "fg"
+           :windowtype "dialog"
+           :wm-ignore true
+  (status-popup :icon {bluetooth_status == "yes" ? "󰂯" : "󰂲"}
+                :title "Bluetooth"
+                :detail {bluetooth_status == "yes" ? "On" : "Off"}
+                :action "Open Bluetooth Settings"
+                :command "gnome-control-center bluetooth"))
+
+(defwindow battery-popup
+           :monitor 0
+           :geometry (geometry :x "12px"
+                               :y "34px"
+                               :width "260px"
+                               :height "120px"
+                               :anchor "top right")
+           :stacking "fg"
+           :windowtype "dialog"
+           :wm-ignore true
+  (status-popup :icon {EWW_BATTERY == "" ? "󰂎" :
+                       EWW_BATTERY.BAT0.capacity <= 10 ? "󰁺" :
+                       EWW_BATTERY.BAT0.capacity <= 20 ? "󰁻" :
+                       EWW_BATTERY.BAT0.capacity <= 30 ? "󰁼" :
+                       EWW_BATTERY.BAT0.capacity <= 40 ? "󰁽" :
+                       EWW_BATTERY.BAT0.capacity <= 50 ? "󰁾" :
+                       EWW_BATTERY.BAT0.capacity <= 60 ? "󰁿" :
+                       EWW_BATTERY.BAT0.capacity <= 70 ? "󰂀" :
+                       EWW_BATTERY.BAT0.capacity <= 80 ? "󰂁" :
+                       EWW_BATTERY.BAT0.capacity <= 90 ? "󰂂" : "󰁹"}
+                :title "Battery"
+                :detail {EWW_BATTERY == "" ? "Not available" : "${EWW_BATTERY.BAT0.capacity}% remaining"}
+                :action "Open Power Settings"
+                :command "gnome-control-center power"))
 
 ;; Main Layout Component
 (defwidget bar-layout []
-  (box :class "bar-class"
+  (box :class "gnome-bar-class"
        :orientation "h"
     (left-stuff)
     (center-stuff)
     (right-stuff)))
 
-;; Left Section: Workspaces (Simulated clickable buttons)
+;; Left Section: "Activities" (Stock GNOME style)
 (defwidget left-stuff []
-  (box :class "workspaces"
+  (box :class "activities-section"
        :orientation "h"
        :space-evenly false
        :halign "start"
-    (button :class "ws-btn active" :onclick "wmctrl -s 0" "1")
-    (button :class "ws-btn" :onclick "wmctrl -s 1" "2")
-    (button :class "ws-btn" :onclick "wmctrl -s 2" "3")
-    (button :class "ws-btn" :onclick "wmctrl -s 3" "4")))
+    (button :class "activities-btn" :onclick "gnome-extensions prefs just-perfection-desktop@just-perfection" "Activities")))
 
-;; Center Section: Clock & Date
+;; Center Section: Date & Time (Clickable pill appearance)
 (defwidget center-stuff []
   (box :class "clock-section"
        :orientation "h"
        :halign "center"
-    (label :text "${date}  |  ${time}" :class "time-label")))
+    (button :class "clock-btn" "${time}")))
 
-;; Right Section: Battery & Connectivity status
+(defwidget status-popup [icon title detail action command]
+  (box :class "status-popup"
+       :orientation "v"
+       :space-evenly false
+    (box :class "status-popup-heading"
+         :orientation "h"
+         :space-evenly false
+         :spacing 10
+      (label :class "status-popup-icon" :text icon)
+      (box :orientation "v"
+           :space-evenly false
+           :halign "start"
+        (label :class "status-popup-title" :text title :halign "start")
+        (label :class "status-popup-detail" :text detail :halign "start")))
+    (button :class "status-popup-action" :onclick command action)))
+
+;; Right Section: Unified Quick Settings Status (Icons grouped closely together)
 (defwidget right-stuff []
-  (box :class "sys-status"
+  (box :class "quick-settings-section"
        :orientation "h"
        :space-evenly false
        :halign "end"
-    ;; Wifi & Bluetooth Status Indicators
-    (label :text "󰖩  Connected" :class "status-item wifi")
-    (label :text "󰂯 On" :class "status-item bluetooth")
-    ;; Battery Percentage (Using Eww's built-in conditional logic)
-    (label :text {EWW_BATTERY == "" ? "󰁹 100%" : "󰁹 ${EWW_BATTERY.BAT0.capacity}%"} :class "status-item battery")))
+    (box :class "system-status-pill"
+         :orientation "h"
+         :space-evenly false
+      (button :class "status-icon-btn"
+              :onclick "eww open --toggle wifi-popup"
+        (label :text {wifi_status == "enabled" ? "󰖩" : "󰖪"} :class "status-icon"))
+      (button :class "status-icon-btn"
+              :onclick "eww open --toggle bluetooth-popup"
+        (label :text {bluetooth_status == "yes" ? "󰂯" : "󰂲"} :class "status-icon"))
+      (button :class "status-icon-btn"
+              :onclick "eww open --toggle battery-popup"
+        (label :text {EWW_BATTERY == "" ? "󰂎" :
+                      EWW_BATTERY.BAT0.capacity <= 10 ? "󰁺 ${EWW_BATTERY.BAT0.capacity}%" :
+                      EWW_BATTERY.BAT0.capacity <= 20 ? "󰁻 ${EWW_BATTERY.BAT0.capacity}%" :
+                      EWW_BATTERY.BAT0.capacity <= 30 ? "󰁼 ${EWW_BATTERY.BAT0.capacity}%" :
+                      EWW_BATTERY.BAT0.capacity <= 40 ? "󰁽 ${EWW_BATTERY.BAT0.capacity}%" :
+                      EWW_BATTERY.BAT0.capacity <= 50 ? "󰁾 ${EWW_BATTERY.BAT0.capacity}%" :
+                      EWW_BATTERY.BAT0.capacity <= 60 ? "󰁿 ${EWW_BATTERY.BAT0.capacity}%" :
+                      EWW_BATTERY.BAT0.capacity <= 70 ? "󰂀 ${EWW_BATTERY.BAT0.capacity}%" :
+                      EWW_BATTERY.BAT0.capacity <= 80 ? "󰂁 ${EWW_BATTERY.BAT0.capacity}%" :
+                      EWW_BATTERY.BAT0.capacity <= 90 ? "󰂂 ${EWW_BATTERY.BAT0.capacity}%" :
+                      "󰁹 ${EWW_BATTERY.BAT0.capacity}%"}
+               :class "status-icon")))))
