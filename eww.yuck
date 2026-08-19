@@ -20,9 +20,9 @@
 
 (defwindow wifi-popup
            :monitor 0
-           :geometry (geometry :x "15px"
+           :geometry (geometry :x "-10px"
                                :y "40px"
-                               :width "260px"
+                               :width "300px"
                                :height "120px"
                                :anchor "top right")
            :stacking "fg"
@@ -36,9 +36,9 @@
 
 (defwindow bluetooth-popup
            :monitor 0
-           :geometry (geometry :x "15px"
+           :geometry (geometry :x "-10px"
                                :y "40px"
-                               :width "260px"
+                               :width "300px"
                                :height "120px"
                                :anchor "top right")
            :stacking "fg"
@@ -52,9 +52,9 @@
 
 (defwindow battery-popup
            :monitor 0
-           :geometry (geometry :x "15px"
+           :geometry (geometry :x "-10px"
                                :y "40px"
-                               :width "260px"
+                               :width "300px"
                                :height "120px"
                                :anchor "top right")
            :stacking "fg"
