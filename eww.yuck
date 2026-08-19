@@ -1,8 +1,8 @@
 ;; Define the variables that update automatically
 (defpoll time :interval "1m" "date '+%b %d | %H:%M'")
-(defpoll wifi_status :interval "10s" "nmcli radio wifi 2>/dev/null || true")
-(defpoll wifi_name :interval "10s" "nmcli -t -f ACTIVE,SSID dev wifi 2>/dev/null | sed -n 's/^yes://p' | sed -n '1p' || true")
-(defpoll bluetooth_status :interval "10s" "bluetoothctl show 2>/dev/null | sed -n 's/^[[:space:]]*Powered: //p' || true")
+(defpoll wifi_status :interval "1s" "nmcli radio wifi 2>/dev/null || true")
+(defpoll wifi_name :interval "1s" "nmcli -t -f ACTIVE,SSID dev wifi 2>/dev/null | sed -n 's/^yes://p' | sed -n '1p' || true")
+(defpoll bluetooth_status :interval "1s" "bluetoothctl show 2>/dev/null | sed -n 's/^[[:space:]]*Powered: //p' || true")
 (defpoll current_workspace :interval "100ms" "xprop -root _NET_CURRENT_DESKTOP | sed 's/.*= //' ")
 (defpoll workspace_count :interval "1s" "xprop -root _NET_NUMBER_OF_DESKTOPS | sed 's/.*= //' ")
 
