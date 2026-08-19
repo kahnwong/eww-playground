@@ -124,13 +124,13 @@
          :orientation "h"
          :space-evenly false
       (button :class "status-icon-btn"
-              :onclick "eww open --toggle wifi-popup"
+              :onclick "eww close bluetooth-popup >/dev/null 2>&1; eww close battery-popup >/dev/null 2>&1; eww open --toggle wifi-popup"
         (label :text {wifi_status == "enabled" ? "󰖩" : "󰖪"} :class "status-icon"))
       (button :class "status-icon-btn"
-              :onclick "eww open --toggle bluetooth-popup"
+              :onclick "eww close wifi-popup >/dev/null 2>&1; eww close battery-popup >/dev/null 2>&1; eww open --toggle bluetooth-popup"
         (label :text {bluetooth_status == "yes" ? "󰂯" : "󰂲"} :class "status-icon"))
       (button :class "status-icon-btn"
-              :onclick "eww open --toggle battery-popup"
+              :onclick "eww close wifi-popup >/dev/null 2>&1; eww close bluetooth-popup >/dev/null 2>&1; eww open --toggle battery-popup"
         (label :text {EWW_BATTERY == "" ? "󰂎" :
                       EWW_BATTERY.BAT0.capacity <= 10 ? "󰁺 ${EWW_BATTERY.BAT0.capacity}%" :
                       EWW_BATTERY.BAT0.capacity <= 20 ? "󰁻 ${EWW_BATTERY.BAT0.capacity}%" :
