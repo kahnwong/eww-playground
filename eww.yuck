@@ -15,7 +15,7 @@
            :stacking "fg"
            :windowtype "dock"
            :wm-ignore false
-           :reserve (struts :distance "28px" :side "top")
+           :reserve (struts :distance "40px" :side "top")
   (bar-layout))
 
 (defwindow wifi-popup
