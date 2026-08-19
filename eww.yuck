@@ -1,5 +1,5 @@
 ;; Define the variables that update automatically
-(defpoll time :interval "1m" "date '+%a %b %d  %H:%M'") ; GNOME style format: Wed Aug 19 21:46
+(defpoll time :interval "1m" "date '+%b %d | %H:%M'")
 (defpoll wifi_status :interval "10s" "nmcli radio wifi 2>/dev/null || true")
 (defpoll wifi_name :interval "10s" "nmcli -t -f ACTIVE,SSID dev wifi 2>/dev/null | sed -n 's/^yes://p' | sed -n '1p' || true")
 (defpoll bluetooth_status :interval "10s" "bluetoothctl show 2>/dev/null | sed -n 's/^[[:space:]]*Powered: //p' || true")
@@ -91,12 +91,12 @@
        :halign "start"
     (button :class "activities-btn" :onclick "gnome-extensions prefs just-perfection-desktop@just-perfection" "Activities")))
 
-;; Center Section: Date & Time (Clickable pill appearance)
+;; Center Section: Date & Time
 (defwidget center-stuff []
   (box :class "clock-section"
        :orientation "h"
        :halign "center"
-    (button :class "clock-btn" "${time}")))
+    (label :class "clock-label" :text time)))
 
 (defwidget status-popup [icon title detail action command]
   (box :class "status-popup"
